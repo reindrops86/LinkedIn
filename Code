@@ -1,0 +1,18 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class LinkedInRequest(BaseModel):
+    topic: str
+    audience: str = "professionals"
+    tone: str = "professional"
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+@app.post("/linkedin")
+def linkedin(req: LinkedInRequest):
+    post = f"{req.topic}\n\nBuilt for {req.audience}. Tone: {req.tone}."
+    return {"post": post}
