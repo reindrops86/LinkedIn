@@ -1,10 +1,1 @@
-I built an automated content pipeline that generates LinkedIn-style posts from structured brand inputs and routes them through a controlled approval flow before publishing.
-The architecture has three layers.
-First, a FastAPI microservice exposes a linkedin endpoint and a health endpoint. It accepts topic, audience, and tone, then returns a formatted post payload.
-Second, an n8n orchestration workflow handles end-to-end logic: Brand Config, AutoGen Microservice call, Compose Final, Approval Gate, and delivery routing.
-Third, Slack is used as a dry-run destination so we can validate output safely before enabling live LinkedIn publishing.
-The key technical decisions were about reliability and safety.
-I normalized all generated output into one field called final_post so downstream nodes are deterministic.
-I added an approval gate to block weak or empty content and route failed cases to a rejection path instead of publishing.
-I also added a mode-based delivery strategy so the same workflow supports dry-run and live mode without rewiring.
-For validation, I tested each component independently first, then tested node-by-node, then ran repeated end-to-end executions with different topics.
+I built an automated content pipeline that generates LinkedIn-style posts from structured brand inputs and routes them through a controlled approval workflow before publishing. The architecture has three layers: a FastAPI microservice that exposes a LinkedIn endpoint and health endpoint; an n8n orchestration workflow that handles brand configuration, downstream service calls, final composition, approval gating, and routing; and Slack-based dry-run validation to safely test output before live publishing. Key design decisions prioritized reliability and safety: I normalized generated output into a single final_post field for deterministic downstream processing, added an approval gate to reject weak or empty content, and implemented mode-based delivery logic to support both dry-run and live execution without altering the workflow structure. I validated the system by testing each component independently, then running node-by-node verification and repeated end-to-end executions with multiple content topics.
